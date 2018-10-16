@@ -30,8 +30,8 @@ void HOME(){                //HomePage
 }
 
 // #### LED Functions Setup #### //
-void TurnGREEN(){
-  //TurnOFF();
+void TurnGREEN(){                             //#Too Far#
+  //TurnOFF();                                
   AllClear();
   digitalWrite(GREEN,HIGH);
   //digitalWrite(YELLOW,LOW);
@@ -40,7 +40,7 @@ void TurnGREEN(){
   server.send(302, AutoRespond, WebPage);
 }
 
-void TurnYELLOW(){
+void TurnYELLOW(){                             //#Caution - slow, getting close#
   //TurnOFF();
   AllClear();
   digitalWrite(YELLOW,HIGH);
@@ -50,10 +50,21 @@ void TurnYELLOW(){
   server.send(302, AutoRespond, WebPage);
 }
 
-void TurnRED(){
+void TurnRED(){                                 //#Perfect Distance achieved#
   AllClear();
   digitalWrite(RED,HIGH);
   Serial.println("RED");
+  server.send(302, AutoRespond, WebPage);
+}
+
+void TooClose(){
+  AllClear();
+  digitalWrite(GREEN,HIGH);
+  delay(1000);
+  AllClear();
+  digitalWrite(GREEN,LOW);
+  delay(1000);
+  Serial.println("Too Close! Flash the lights!");
   server.send(302, AutoRespond, WebPage);
 }
 
