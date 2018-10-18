@@ -16,8 +16,8 @@ ESP8266WebServer server(80);                     //Server is on Port 80
 
 
 // #### Web Page Setup #### //
-char WebPage[] = "<html><title><Choose Wisely></title><body><form action=\"/green\"><button>Green</button></form><br><form action=\"/yellow\"><button>Yellow</button></form><br><form action=\"/red\"><button>Red</button></form><br><form action=\"/turnoff\"><button>Clear</button></form><br><form action=\"/cycle\"><button>Cycle</button></form><br></body></html>";
-char AutoRespond[] = "text/html\nRefresh: 1";   //header: content type/conent type\ how often refresh
+char WebPage[] = "<html><title><Choose Wisely></title><body><form action=\"/green\"><button>Green</button></form><br><form action=\"/yellow\"><button>Yellow</button></form><br><form action=\"/red\"><button>Red</button></form><br><form action=\"/turnoff\"><button>Clear</button></form><br></body></html>";
+char AutoRespond[] = "text/html";   //header: content type/conent type\ how often refresh
 
 void NoClient(){
   server.send(404);
@@ -38,6 +38,21 @@ void TurnGREEN(){
   //digitalWrite(RED,LOW);
   Serial.println("GREEN");
   server.send(302, AutoRespond, WebPage);
+}
+
+void Flash(){
+  digitalWrite(GREEN,HIGH);
+  delay (200);
+  digitalWrite(GREEN,LOW);
+  delay (200);
+  digitalWrite(GREEN,HIGH);
+  delay (200);
+  digitalWrite(GREEN,LOW);
+  delay (200);
+  digitalWrite(GREEN,HIGH);
+  delay (200);
+  digitalWrite(GREEN,LOW);
+  delay (200);
 }
 
 void TurnYELLOW(){
@@ -69,21 +84,6 @@ void AllClear(){
   digitalWrite(RED,LOW);
 }
 
-void CYCLE(){
-  //TurnOFF(); Don't do this. Sends same cmd to server twice: "server.send(302, AutoRespond, WebPage)" = confuses server - times out program
-  AllClear();
-  Serial.println("Cycling");
-  digitalWrite(GREEN,HIGH);
-  delay(2000); //Wait 2 seconds
-  digitalWrite(GREEN,LOW);
-  digitalWrite(YELLOW,HIGH);
-  delay(2000);
-  digitalWrite(YELLOW,LOW);
-  digitalWrite(RED,HIGH);
-  delay(2000);
-  server.send(302, AutoRespond, WebPage);
-}
-
 void setup() {
   // put your setup code here, to run once:
   pinMode(GREEN,OUTPUT);
@@ -107,8 +107,8 @@ void setup() {
   server.on("/yellow", TurnYELLOW);
   server.on("/red", TurnRED);
   server.on("/turnoff", TurnOFF);
-  server.on ("/cycle", CYCLE);
   server.on("/", HOME);
+  server.on("/flash", Flash);
 
   server.onNotFound(NoClient);            //When client not found
 
@@ -119,3 +119,12 @@ void setup() {
 void loop() {                                // put your main code here, to run repeatedly:
   server.handleClient();                     //Listen for clients (Connections to the webpage)
 }
+
+
+/// ## SOURCES ## ///
+//https://techtutorialsx.com/2016/07/17/esp8266-http-get-requests/
+//https://www.instructables.com/id/WiFi-Communication-Between-Two-ESP8266-Based-MCU-T/
+//https://howtomechatronics.com/tutorials/arduino/ultrasonic-sensor-hc-sr04/
+//http://fritzing.org/home/
+//https://www.instructables.com/id/Motion-Detector-With-Blynk-Notifications-WeMos-D1-/
+//Andrew Thomas, friend, M.S. candidate

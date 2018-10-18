@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 #include <WiFiClient.h>
 
@@ -18,6 +19,17 @@ void setup() {
   pinMode (Ping, OUTPUT);  
   pinMode(Receive, INPUT);    
   Serial.begin(9600);       //Begin serial monitor
+
+  // ### Begin Connection to Wifi ### //
+  WiFi.begin(WifiName,Password);
+  while (WiFi.status() !=WL_CONNECTED){          //If not connected to Wifi, delay until connected
+    delay (2000);
+    Serial.println("Finding a Connection...");
+  }
+
+  Serial.println("Connection Started");         //Begin Connection to Wifi
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());               //IP assigned to Server by host wifi
 }
 
 void loop() {
@@ -27,22 +39,37 @@ void loop() {
   digitalWrite(Ping,HIGH);    //Send out sound
   delayMicroseconds (10);       
   digitalWrite(Ping,LOW);     //Clear again
+
+  HTTPClient Caller;
   
   TimeTravel = pulseIn (Receive,HIGH);       //Get the input of Receive
   distance = (TimeTravel*0.034)/2;          //converts time to cm
   if (distance > 0){                        // in cm
     if (distance > 10){
       Serial.println("Green - Too far");
+      Caller.begin("http://192.168.43.177/green");  //Server is 192.168.43.177. Send GET request to this
     }
     else if (distance < 10 && distance > 5){
       Serial.println("Yellow - Getting Close");
+      Caller.begin("http://192.168.43.177/yellow");
     }
     else if (distance == 5) {
       Serial.println ("Red - Perfect");
+      Caller.begin("http://192.168.43.177/red");
     }
     else if (distance < 5){
       Serial.println ("Flash Green - Too close");
+      Caller.begin("http://192.168.43.177/flash");
     }
   }
-    
+    Caller.GET();                         //Sends the GET request
+    Caller.end();
 }
+
+/// ## SOURCES ## ///
+//https://techtutorialsx.com/2016/07/17/esp8266-http-get-requests/
+//https://www.instructables.com/id/WiFi-Communication-Between-Two-ESP8266-Based-MCU-T/
+//https://howtomechatronics.com/tutorials/arduino/ultrasonic-sensor-hc-sr04/
+//http://fritzing.org/home/
+//https://www.instructables.com/id/Motion-Detector-With-Blynk-Notifications-WeMos-D1-/
+//Andrew Thomas, friend, M.S. candidate
