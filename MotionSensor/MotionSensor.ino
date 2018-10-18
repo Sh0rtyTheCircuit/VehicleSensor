@@ -31,12 +31,13 @@ void loop() {
   TimeTravel = pulseIn (Receive,HIGH);       //Get the input of Receive
   distance = (TimeTravel*0.034)/2;          //converts time to cm
   if (distance > 0){                        // in cm
-    if (distance > 10)           
+    if (distance > 10){
       Serial.println("Green - Too far");
+    }
     else if (distance < 10 && distance > 5){
       Serial.println("Yellow - Getting Close");
     }
-    else if (distance = 5) {
+    else if (distance == 5) {
       Serial.println ("Red - Perfect");
     }
     else if (distance < 5){
