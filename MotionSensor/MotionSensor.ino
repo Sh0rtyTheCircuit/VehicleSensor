@@ -43,11 +43,11 @@ void loop() {
   HTTPClient Caller;
   
   TimeTravel = pulseIn (Receive,HIGH);       //Get the input of Receive
-  distance = (TimeTravel*0.034)/2;          //converts time to cm
+  distance = (TimeTravel*0.034)/2;          //converts time to cm. If want a more precise reading, do an average of 3 readings.
   if (distance > 0){                        // in cm
     if (distance > 10){
       Serial.println("Green - Too far");
-      Caller.begin("http://192.168.43.177/green");  //Server is 192.168.43.177. Send GET request to this
+      Caller.begin("http://192.168.43.177/green");  //Server is 192.168.43.177. Setup GET request to send to this
     }
     else if (distance < 10 && distance > 5){
       Serial.println("Yellow - Getting Close");
