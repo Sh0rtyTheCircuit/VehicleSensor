@@ -30,8 +30,8 @@ void HOME(){                //HomePage
 }
 
 // #### LED Functions Setup #### //
-void TurnGREEN(){                             //#Too Far#
-  //TurnOFF();                                
+void TurnGREEN(){
+  //TurnOFF();
   AllClear();
   digitalWrite(GREEN,HIGH);
   //digitalWrite(YELLOW,LOW);
@@ -40,7 +40,22 @@ void TurnGREEN(){                             //#Too Far#
   server.send(302, AutoRespond, WebPage);
 }
 
-void TurnYELLOW(){                             //#Caution - slow, getting close#
+void Flash(){
+  digitalWrite(GREEN,HIGH);
+  delay (200);
+  digitalWrite(GREEN,LOW);
+  delay (200);
+  digitalWrite(GREEN,HIGH);
+  delay (200);
+  digitalWrite(GREEN,LOW);
+  delay (200);
+  digitalWrite(GREEN,HIGH);
+  delay (200);
+  digitalWrite(GREEN,LOW);
+  delay (200);
+}
+
+void TurnYELLOW(){
   //TurnOFF();
   AllClear();
   digitalWrite(YELLOW,HIGH);
@@ -50,21 +65,10 @@ void TurnYELLOW(){                             //#Caution - slow, getting close#
   server.send(302, AutoRespond, WebPage);
 }
 
-void TurnRED(){                                 //#Perfect Distance achieved#
+void TurnRED(){
   AllClear();
   digitalWrite(RED,HIGH);
   Serial.println("RED");
-  server.send(302, AutoRespond, WebPage);
-}
-
-void TooClose(){
-  AllClear();
-  digitalWrite(GREEN,HIGH);
-  delay(1000);
-  AllClear();
-  digitalWrite(GREEN,LOW);
-  delay(1000);
-  Serial.println("Too Close! Flash the lights!");
   server.send(302, AutoRespond, WebPage);
 }
 
@@ -103,8 +107,8 @@ void setup() {
   server.on("/yellow", TurnYELLOW);
   server.on("/red", TurnRED);
   server.on("/turnoff", TurnOFF);
-  server.on ("/cycle", CYCLE);
   server.on("/", HOME);
+  server.on("/flash", Flash);
 
   server.onNotFound(NoClient);            //When client not found
 
@@ -115,3 +119,12 @@ void setup() {
 void loop() {                                // put your main code here, to run repeatedly:
   server.handleClient();                     //Listen for clients (Connections to the webpage)
 }
+
+
+/// ## SOURCES ## ///
+//https://techtutorialsx.com/2016/07/17/esp8266-http-get-requests/
+//https://www.instructables.com/id/WiFi-Communication-Between-Two-ESP8266-Based-MCU-T/
+//https://howtomechatronics.com/tutorials/arduino/ultrasonic-sensor-hc-sr04/
+//http://fritzing.org/home/
+//https://www.instructables.com/id/Motion-Detector-With-Blynk-Notifications-WeMos-D1-/
+//Andrew Thomas, friend, M.S. candidate
